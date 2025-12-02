@@ -99,3 +99,4 @@ class FaceRecognizer:
             "topk": results    # List prediksi top-k
 
         }
+
