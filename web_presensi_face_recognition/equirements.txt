@@ -1,0 +1,16 @@
+# --- Framework Backend (Wajib) ---
+flask
+gunicorn                 # Production HTTP server (Wajib untuk Render/Heroku)
+
+# --- Deep Learning & AI Core ---
+torch
+torchvision
+timm                     # Untuk arsitektur EfficientNet
+facenet-pytorch          # Untuk deteksi wajah MTCNN berbasis PyTorch
+
+# --- Computer Vision & Data Handling ---
+opencv-python-headless   # Menyediakan modul 'cv2' (Wajib untuk server cloud tanpa GUI)
+numpy
+pandas                   # Untuk membaca file data mahasiswa (.csv atau .xlsx)
+openpyxl                 # Untuk mendukung pandas membaca file .xlsx
+Pillow                   # Untuk modul PIL (memproses gambar)

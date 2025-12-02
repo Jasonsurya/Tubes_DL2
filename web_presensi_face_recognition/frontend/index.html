@@ -1,0 +1,115 @@
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Presensi Wajah</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    video, canvas {
+      width: 320px;
+      height: 240px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Presensi Mahasiswa dengan Wajah</h1>
+
+  <video id="video" autoplay playsinline></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <br>
+  <button id="btn-presensi">Ambil Presensi</button>
+
+  <p id="result"></p>
+
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const btn = document.getElementById("btn-presensi");
+    const result = document.getElementById("result");
+
+    async function initCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+      } catch (err) {
+        console.error("Gagal akses kamera:", err);
+        result.textContent = "Gagal akses kamera: " + err.message;
+        result.className = "error";
+      }
+    }
+
+    btn.addEventListener("click", async () => {
+      if (!video.videoWidth || !video.videoHeight) {
+        result.textContent = "Video belum siap. Coba beberapa detik lagi.";
+        result.className = "error";
+        return;
+      }
+
+      const ctx = canvas.getContext("2d");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append("image", blob, "frame.png");
+
+        result.textContent = "Mengirim gambar, harap tunggu...";
+        result.className = "";
+
+        try {
+          const res = await fetch("http://localhost:5000/presensi", {
+            method: "POST",
+            body: formData
+          });
+
+          const data = await res.json();
+
+          if (!data.success) {
+            result.textContent = "Gagal presensi: " + (data.message || "Tidak diketahui");
+            result.className = "error";
+          } else {
+            const probPercent = (data.prob * 100).toFixed(2);
+            result.textContent =
+              `Mahasiswa dengan NIM ${data.nim} ` +
+              `(${data.nama || "Nama tidak diketahui"}) ` +
+              `hadir pada ${data.timestamp} (conf: ${probPercent}%).`;
+            result.className = "success";
+          }
+        } catch (err) {
+          console.error(err);
+          result.textContent = "Terjadi error saat mengirim data ke server.";
+          result.className = "error";
+        }
+      }, "image/png");
+    });
+
+    initCamera();
+  </script>
+</body>
+</html>
