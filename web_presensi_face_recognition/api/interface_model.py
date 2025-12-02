@@ -16,7 +16,7 @@ IMAGE_SIZE = 224
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(CURRENT_DIR, 'EfficientNet_B1_face_recognition_best.pth')
 # ASUMSI: Nama file CSV adalah Nama_NIM_sorted_AZ.csv (sesuai file Anda)
-EXCEL_PATH = os.path.join(CURRENT_DIR, 'Nama_NIM_sorted_AZ.xlsx - Sheet1.csv') 
+EXCEL_PATH = os.path.join(CURRENT_DIR, 'Nama_NIM_sorted_AZ.xlsx') 
 
 
 class FaceRecognizer:
@@ -97,4 +97,5 @@ class FaceRecognizer:
         return {
             "main": results[0], # Prediksi teratas
             "topk": results    # List prediksi top-k
+
         }
