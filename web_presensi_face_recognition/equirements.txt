@@ -1,5 +1,6 @@
 # --- Framework Backend (Wajib) ---
 flask
+flask-cors
 gunicorn                 # Production HTTP server (Wajib untuk Render/Heroku)
 
 # --- Deep Learning & AI Core ---
@@ -13,4 +14,5 @@ opencv-python-headless   # Menyediakan modul 'cv2' (Wajib untuk server cloud tan
 numpy
 pandas                   # Untuk membaca file data mahasiswa (.csv atau .xlsx)
 openpyxl                 # Untuk mendukung pandas membaca file .xlsx
+
 Pillow                   # Untuk modul PIL (memproses gambar)
